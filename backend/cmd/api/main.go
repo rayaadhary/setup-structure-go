@@ -1,0 +1,56 @@
+package main
+
+import (
+	"log"
+	"os"
+
+	"github.com/joho/godotenv"
+	"github.com/rayaadhary/social-go/internal/db"
+	"github.com/rayaadhary/social-go/internal/service"
+	"github.com/rayaadhary/social-go/internal/store"
+)
+
+func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("error loading .env file")
+	}
+
+	cfg := config{
+		addr: os.Getenv("APP_ADDR"),
+		db: dbConfig{
+			addr:         os.Getenv("DB_ADDR"),
+			maxOpenConns: 30,
+			maxIdleConns: 30,
+			maxIdleTime:  os.Getenv("DB_MAX_IDDLE_TIME"),
+		},
+	}
+
+	db, err := db.New(cfg.db.addr,
+		cfg.db.maxOpenConns,
+		cfg.db.maxIdleConns,
+		cfg.db.maxIdleTime,
+	)
+
+	if err != nil {
+		log.Panic(err)
+	}
+
+	defer db.Close()
+	log.Printf("db connection pool established")
+
+	store := store.NewStorage(db)
+
+	services := services{
+		Posts: service.NewPostService(store.Posts),
+	}
+
+	app := &application{
+		config:   cfg,
+		store:    store,
+		services: services,
+	}
+
+	mux := app.mount()
+
+	log.Fatal(app.run(mux))
+}
