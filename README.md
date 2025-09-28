@@ -1,1 +1,1 @@
-# learning-go-svelte
+# learning-go
