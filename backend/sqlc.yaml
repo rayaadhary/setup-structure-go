@@ -1,0 +1,18 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    schema: "cmd/migrate/migrations"
+    queries: "internal/sqlc/queries"
+    gen:
+      go:
+        package: "sqlc"
+        out: "internal/sqlc"
+        sql_package: "database/sql"
+        emit_json_tags: true
+        emit_prepared_queries: false
+        emit_interface: false
+        overrides:
+          # Biar kolom timestamp nullable jadi sql.NullTime
+          - db_type: "pg_catalog.timestamptz"
+            nullable: true
+            go_type: "database/sql.NullTime"

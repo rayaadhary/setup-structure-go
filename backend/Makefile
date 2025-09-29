@@ -19,3 +19,6 @@ migrate-up:
 .PHONY: migrate-down
 migrate-down:
 	migrate -path $(MIGRATIONS_PATH) -database "$(DB_URL)" down 1
+
+.PHONY: db-refresh
+db-refresh: migrate-down migrate-up sqlc-generate
