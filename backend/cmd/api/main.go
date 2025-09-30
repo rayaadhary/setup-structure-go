@@ -38,7 +38,7 @@ func main() {
 	defer db.Close()
 	log.Printf("db connection pool established")
 
-	store := store.NewStorage(db)
+	store := store.NewRepos(db)
 
 	services := services{
 		Posts: service.NewPostService(store.Posts),

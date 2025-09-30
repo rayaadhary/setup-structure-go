@@ -13,7 +13,7 @@ import (
 
 type application struct {
 	config   config
-	store    store.Storage
+	store    store.Repos
 	services services
 }
 

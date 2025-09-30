@@ -6,11 +6,11 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/rayaadhary/social-go/internal/store"
+	"github.com/rayaadhary/social-go/internal/posts"
 )
 
 func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request) {
-	var input store.Post
+	var input posts.Post
 
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		writeError(w, http.StatusBadRequest, "invalid body")
@@ -60,7 +60,7 @@ func (app *application) updatePostHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	var input store.Post
+	var input posts.Post
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 		writeError(w, http.StatusBadRequest, "invalid body")
 		return

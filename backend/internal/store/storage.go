@@ -1,13 +1,17 @@
 package store
 
-import "database/sql"
+import (
+	"database/sql"
 
-type Storage struct {
-	Posts PostRepository
+	"github.com/rayaadhary/social-go/internal/posts"
+)
+
+type Repos struct {
+	Posts posts.Repository
 }
 
-func NewStorage(db *sql.DB) Storage {
-	return Storage{
-		Posts: NewPostsRepo(db),
+func NewRepos(db *sql.DB) Repos {
+	return Repos{
+		Posts: posts.NewSQLCRepo(db),
 	}
 }
