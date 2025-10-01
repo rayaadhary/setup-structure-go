@@ -1,0 +1,60 @@
+basePath: /v1
+definitions:
+  posts.CreatePostRequest:
+    properties:
+      content:
+        example: Hello world
+        type: string
+      title:
+        example: My first post
+        type: string
+    type: object
+  posts.Post:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a sample server for Social Go API.
+  title: Social Go API
+  version: "1.0"
+paths:
+  /posts:
+    post:
+      consumes:
+      - application/json
+      description: Create a new post with title and content
+      parameters:
+      - description: Post input
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/posts.CreatePostRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/posts.Post'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a post
+      tags:
+      - posts
+swagger: "2.0"

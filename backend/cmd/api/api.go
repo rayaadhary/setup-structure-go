@@ -9,6 +9,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/rayaadhary/social-go/internal/service"
 	"github.com/rayaadhary/social-go/internal/store"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type application struct {
@@ -54,6 +55,10 @@ func (app *application) mount() *chi.Mux {
 			r.Delete("/{id}", app.deletePostHandler)
 		})
 	})
+
+	// Swagger docs
+	r.Get("/swagger/*", httpSwagger.WrapHandler)
+
 	return r
 }
 

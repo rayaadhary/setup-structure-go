@@ -5,11 +5,17 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	_ "github.com/rayaadhary/social-go/docs"
 	"github.com/rayaadhary/social-go/internal/db"
 	"github.com/rayaadhary/social-go/internal/service"
 	"github.com/rayaadhary/social-go/internal/store"
 )
 
+// @title Social Go API
+// @version 1.0
+// @description This is a sample server for Social Go API.
+// @host localhost:8080
+// @BasePath /v1
 func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("error loading .env file")

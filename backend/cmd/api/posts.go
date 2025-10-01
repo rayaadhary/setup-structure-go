@@ -9,6 +9,15 @@ import (
 	"github.com/rayaadhary/social-go/internal/posts"
 )
 
+// @Summary Create a post
+// @Description Create a new post with title and content
+// @Tags posts
+// @Accept json
+// @Produce json
+// @Param post body posts.CreatePostRequest true "Post input"
+// @Success 201 {object} posts.Post
+// @Failure 400 {object} map[string]string
+// @Router /posts [post]
 func (app *application) createPostHandler(w http.ResponseWriter, r *http.Request) {
 	var input posts.Post
 
