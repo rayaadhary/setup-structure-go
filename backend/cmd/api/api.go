@@ -1,12 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/rayaadhary/social-go/cmd/auth"
 	"github.com/rayaadhary/social-go/internal/service"
 	"github.com/rayaadhary/social-go/internal/store"
 	httpSwagger "github.com/swaggo/http-swagger"
@@ -20,6 +22,7 @@ type application struct {
 
 type services struct {
 	Posts *service.PostService
+	Users *service.UserService
 }
 
 type config struct {
@@ -44,8 +47,21 @@ func (app *application) mount() *chi.Mux {
 
 	r.Use(middleware.Timeout(60 * time.Second))
 
+	r.Get("/health", app.healthCheckHandler)
+
+	// Public route
+	authHandler := auth.NewAuthHandler(app.services.Users)
+	r.Post("/login", authHandler.Login)
+
 	r.Route("/v1", func(r chi.Router) {
-		r.Get("/health", app.healthCheckHandler)
+		r.Use(auth.AuthMiddleware)
+		r.Get("/me", func(w http.ResponseWriter, r *http.Request) {
+			if userID, ok := auth.GetUserID(r.Context()); ok {
+				w.Write([]byte("Hello user with ID: " + fmt.Sprint(userID)))
+			} else {
+				http.Error(w, "no user found", http.StatusUnauthorized)
+			}
+		})
 
 		r.Route("/posts", func(r chi.Router) {
 			r.Post("/", app.createPostHandler)

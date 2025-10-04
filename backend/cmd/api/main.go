@@ -9,6 +9,7 @@ import (
 	"github.com/rayaadhary/social-go/internal/db"
 	"github.com/rayaadhary/social-go/internal/service"
 	"github.com/rayaadhary/social-go/internal/store"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // @title Social Go API
@@ -37,6 +38,15 @@ func main() {
 		cfg.db.maxIdleTime,
 	)
 
+	password := "123456"
+	hash, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+
+	_, err = db.Exec(`
+		INSERT INTO users (username, password)
+		VALUES ($1, $2)
+		ON CONFLICT (username) DO NOTHING
+	`, "superadmin", string(hash))
+
 	if err != nil {
 		log.Panic(err)
 	}
@@ -48,6 +58,7 @@ func main() {
 
 	services := services{
 		Posts: service.NewPostService(store.Posts),
+		Users: service.NewUserService(store.Users),
 	}
 
 	app := &application{
