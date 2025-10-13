@@ -9,6 +9,7 @@ import (
 	"github.com/rayaadhary/social-go/internal/db"
 	"github.com/rayaadhary/social-go/internal/service"
 	"github.com/rayaadhary/social-go/internal/store"
+	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -21,6 +22,13 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("error loading .env file")
 	}
+
+	logger, _ := zap.NewDevelopment()
+	defer logger.Sync()
+
+	logger.Info("Starting Backend GO Server")
+
+	logger.Info("Connecting to database", zap.String("db_addr", os.Getenv("DB_ADDR")))
 
 	cfg := config{
 		addr: os.Getenv("APP_ADDR"),
@@ -52,7 +60,7 @@ func main() {
 	}
 
 	defer db.Close()
-	log.Printf("db connection pool established")
+	logger.Info("db connection pool established")
 
 	store := store.NewRepos(db)
 
@@ -70,4 +78,5 @@ func main() {
 	mux := app.mount()
 
 	log.Fatal(app.run(mux))
+	logger.Fatal("server crash", zap.Error(err))
 }

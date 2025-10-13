@@ -1,0 +1,36 @@
+# ===== Go build artifacts =====
+bin/
+tmp/
+*.out
+*.exe
+
+# ===== Loki & Promtail data =====
+loki-data/
+promtail-data/
+*.wal
+
+# ===== Logs =====
+logs/
+*.log
+
+# ===== Env & config local =====
+.env
+.env.local
+config/*.local.*
+
+# ===== Docker garbage =====
+*.pid
+*.sock
+*.tmp
+.docker/
+docker-compose.override.yml
+
+# ===== IDE files =====
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ===== OS noise =====
+.DS_Store
+Thumbs.db
