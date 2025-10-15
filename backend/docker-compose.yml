@@ -17,6 +17,33 @@ services:
       retries: 20
     restart: unless-stopped
 
+  migrate:
+    image: migrate/migrate
+    command:
+      [
+        "-path", "/migrations",
+        "-database", "postgres://admin:adminpassword@postgres-db:5432/social?sslmode=disable",
+        "up"
+      ]
+    volumes:
+      - ./cmd/migrate/migrations:/migrations
+    depends_on:
+      db:
+        condition: service_healthy
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend
+    volumes:
+      - ./.env:/app/.env:ro
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    ports:
+      - "8080:8080"
+
   loki:
     image: grafana/loki
     container_name: loki
